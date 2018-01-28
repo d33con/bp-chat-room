@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import LoginForm from "./LoginForm";
+import ChatContainer from "../chats/ChatContainer";
 import io from "socket.io-client";
 import { USER_CONNECTED, LOGOUT } from "../Events";
 
-const socketUrl = "http://172.21.24.141:3231/";
+const socketUrl = "http://172.21.23.199:3231/";
 
 class Layout extends Component {
   constructor(props) {
@@ -41,10 +42,14 @@ class Layout extends Component {
   };
 
   render() {
-    const { socket } = this.state;
+    const { socket, user } = this.state;
     return (
       <div className="container">
-        <LoginForm socket={socket} setUser={this.setUser} />
+        {!user ? (
+          <LoginForm socket={socket} setUser={this.setUser} />
+        ) : (
+          <ChatContainer socket={socket} user={user} logout={this.logout} />
+        )}
       </div>
     );
   }

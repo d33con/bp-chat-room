@@ -1,4 +1,4 @@
-const uuidv4 = require("/uuid/v4");
+const uuidv4 = require("uuid/v4");
 
 /*
 create a user object
@@ -57,3 +57,9 @@ return a string representing time in 24h format
 param date: Date
 */
 getTime = date => `${date.getHours()}:${("0" + date.getMinutes()).slice(-2)}`;
+
+module.exports = {
+  createUser,
+  createMessage,
+  createChat
+};
