@@ -8,7 +8,8 @@ const {
   LOGOUT,
   MESSAGE_RECEIVED,
   MESSAGE_SENT,
-  TYPING
+  TYPING,
+  PRIVATE_MESSAGE
 } = require("../Events");
 
 const { createUser, createMessage, createChat } = require("../Factories");
@@ -26,12 +27,16 @@ module.exports = function(socket) {
     if (isUser(connectedUsers, nickname)) {
       callback({ isUser: true, user: null });
     } else {
-      callback({ isUser: false, user: createUser({ name: nickname }) });
+      callback({
+        isUser: false,
+        user: createUser({ name: nickname, socketId: socket.id })
+      });
     }
   });
 
   // user connects with username
   socket.on(USER_CONNECTED, user => {
+    user.socketId = socket.id;
     connectedUsers = addUser(connectedUsers, user);
     socket.user = user;
     sendMessageToChatFromUser = sendMessageToChat(user.name);
@@ -66,6 +71,21 @@ module.exports = function(socket) {
   // user is typing
   socket.on(TYPING, ({ chatId, isTyping }) => {
     sendTypingFromUser(chatId, isTyping);
+  });
+
+  // private messaging
+  socket.on(PRIVATE_MESSAGE, ({ receiver, sender }) => {
+    console.log(connectedUsers);
+    if (receiver in connectedUsers) {
+      const newChat = createChat({
+        name: `${receiver}&${sender}`,
+        users: [receiver, sender]
+      });
+      const receiverSocket = connectedUsers[receiver].socketId;
+      socket.to(receiverSocket).emit(PRIVATE_MESSAGE, newChat);
+      socket.emit(PRIVATE_MESSAGE, newChat);
+      console.log(receiver, sender);
+    }
   });
 };
 

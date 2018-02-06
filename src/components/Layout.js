@@ -4,7 +4,7 @@ import ChatContainer from "../chats/ChatContainer";
 import io from "socket.io-client";
 import { USER_CONNECTED, LOGOUT } from "../Events";
 
-const socketUrl = "http://172.21.39.228:3231/";
+const socketUrl = "http://172.21.30.181:3231/";
 
 class Layout extends Component {
   constructor(props) {

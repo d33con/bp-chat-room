@@ -7,9 +7,10 @@ prop name: string
 param object {name: string}
 */
 
-const createUser = ({ name = "" } = {}) => ({
+const createUser = ({ name = "", socketId = null } = {}) => ({
   id: uuidv4(),
-  name
+  name,
+  socketId
 });
 
 /*
